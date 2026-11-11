@@ -1,6 +1,6 @@
 # 🐾 Patas Solidárias – Controle de Estoque
 
-Sistema web para uma ONG **fictícia** de proteção animal controlar produtos, doações e consumo.
+Sistema web para uma ONG de proteção animal controlar produtos, doações e consumo.
 Projeto de **Atividades de Extensão II** – CST em Análise e Desenvolvimento de Sistemas (2º semestre, 2026/2) – Programa 8 – Inova Mais UNIP.
 
 > Todos os dados são fictícios, apenas para demonstração. Não há dados pessoais nem informações reais de animais.
