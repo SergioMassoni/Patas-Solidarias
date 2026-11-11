@@ -62,7 +62,7 @@ Ração para cães adultos 15 kg · Ração para filhotes 10 kg · Vermífugo 5 
 
 | Etapa do guia | O que este projeto entrega |
 |---|---|
-| 1ª – Identificação da instituição | ONG fictícia de proteção animal; levantamento: controle manual dificulta saber saldos, doações e consumo |
+| 1ª – Identificação da instituição | ONG de proteção animal; levantamento: controle manual dificulta saber saldos, doações e consumo |
 | 2ª – Análise e planejamento | Requisitos (seção 2 do enunciado) e modelagem das duas tabelas (seção 3 deste documento) |
 | 3ª – Desenvolvimento | Este sistema (solução simples, com banco de dados básico) |
 | 4ª – Apresentação e validação | Demonstrar o sistema aos responsáveis da instituição e coletar a percepção de uso |
