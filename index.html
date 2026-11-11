@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patas Solidárias – Controle de Estoque</title>
+<style>
+:root{--v:#2e7d32;--v2:#1b5e20;--vc:#e8f5e9;--bg:#f5f7f5;--tx:#26332a;--cz:#6b7a70;--bd:#dfe6e0;--am:#f9a825;--vm:#c62828}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--tx);display:flex;min-height:100vh}
+aside{width:240px;background:var(--v2);color:#fff;padding:18px 12px;position:sticky;top:0;height:100vh;flex-shrink:0}
+.logo{font-size:20px;font-weight:700;padding:6px 10px 18px}.logo small{display:block;font-weight:400;font-size:12px;opacity:.8}
+nav a{display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:8px;color:#e8f5e9;text-decoration:none;cursor:pointer;margin-bottom:4px}
+nav a:hover{background:rgba(255,255,255,.12)}nav a.on{background:#fff;color:var(--v2);font-weight:600}
+main{flex:1;padding:26px;min-width:0}h1{margin:0 0 18px;font-size:24px}h2{margin:0 0 12px;font-size:16px}
+.topo{display:none}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:18px}
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px;border-left:5px solid var(--v)}
+.card.warn{border-left-color:var(--am)}.card.bad{border-left-color:var(--vm)}
+.card b{display:block;font-size:30px;margin-top:4px}.card span{color:var(--cz);font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.box{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px}.grid2 .box{margin:0}
+table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;background:var(--vc);color:var(--v2);padding:9px 10px}
+td{padding:9px 10px;border-bottom:1px solid var(--bd)}tr:hover td{background:#fafcfa}.rolar{overflow-x:auto}
+.b{padding:3px 9px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
+.grn{background:#e8f5e9;color:#2e7d32}.yel{background:#fff4d6;color:#8a6100}.red{background:#fde7e7;color:#b71c1c}
+.alerta{padding:9px 12px;border-radius:8px;margin-bottom:8px;font-size:14px}.alerta.yel{background:#fff4d6}.alerta.red{background:#fde7e7}
+button,.btn{background:var(--v);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;text-decoration:none;display:inline-block}
+button:hover,.btn:hover{background:var(--v2)}button.sec{background:#fff;color:var(--v2);border:1px solid var(--v)}button.perigo{background:var(--vm)}
+button.mini{padding:5px 10px;font-size:12px}
+label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}input,select,textarea{width:100%;padding:9px;border:1px solid var(--bd);border-radius:8px;font:inherit;background:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid #a5d6a7}
+.form{max-width:560px}.linha{display:flex;gap:12px}.linha>*{flex:1}.filtros{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:end}.filtros>*{flex:1;min-width:130px}
+.barra{height:14px;border-radius:7px;background:#e8f5e9;margin:4px 0 10px;overflow:hidden}.barra i{display:block;height:100%;background:var(--v)}.barra.s i{background:#8d6e63}
+dialog{border:0;border-radius:14px;padding:22px;width:min(520px,94vw)}dialog::backdrop{background:rgba(0,0,0,.4)}
+#toast{position:fixed;right:18px;bottom:18px;padding:12px 18px;border-radius:10px;color:#fff;background:var(--v);display:none;z-index:9}
+.vazio{color:var(--cz);padding:14px 0}.abas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.abas button{background:#fff;color:var(--v2);border:1px solid var(--bd)}.abas button.on{background:var(--v);color:#fff}
+@media(max-width:800px){body{display:block}aside{position:fixed;left:-250px;z-index:5;transition:.2s}aside.abre{left:0}
+.topo{display:flex;align-items:center;gap:12px;background:var(--v2);color:#fff;padding:12px 16px;position:sticky;top:0;z-index:4}.topo button{background:none;font-size:22px;padding:0 6px}
+main{padding:16px}.grid2{grid-template-columns:1fr}.linha{flex-direction:column;gap:0}}
+</style>
+</head>
+<body>
+<aside id="menu">
+  <div class="logo">🐾 Patas Solidárias<small>Controle de Estoque</small></div>
+  <nav>
+    <a data-t="dashboard">📊 Dashboard</a><a data-t="produtos">🦴 Produtos</a>
+    <a data-t="entrada">📥 Entrada de produtos</a><a data-t="saida">📤 Saída de produtos</a>
+    <a data-t="historico">🕘 Histórico</a><a data-t="relatorios">📄 Relatórios</a>
+  </nav>
+</aside>
+<div style="flex:1;min-width:0">
+  <div class="topo"><button onclick="menu.classList.toggle('abre')">☰</button><b>🐾 Patas Solidárias</b></div>
+  <main id="conteudo"></main>
+</div>
+<dialog id="dlg"><form id="fp" method="dialog"></form></dialog>
+<div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const br=d=>d?d.split('-').reverse().join('/'):'', num=n=>Number(n).toLocaleString('pt-BR',{maximumFractionDigits:3});
+const hoje=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const opts=(l,sel)=>l.map(x=>`<option ${x===sel?'selected':''}>${esc(x)}</option>`).join('');
+let cfg, produtos=[], tela='dashboard', rel='geral';
+async function api(u,m='GET',b){const r=await fetch('/api/'+u,{method:m,headers:{'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined});const j=await r.json();if(!r.ok)throw new Error(j.erro||'Erro inesperado');return j}
+function toast(t,erro){const e=$('#toast');e.textContent=t;e.style.background=erro?'#c62828':'#2e7d32';e.style.display='block';clearTimeout(e.t);e.t=setTimeout(()=>e.style.display='none',3500)}
+const sit=(q,m)=>q<=0?'<span class="b red">Sem estoque</span>':q<m?'<span class="b yel">Estoque baixo</span>':'<span class="b grn">Normal</span>';
+const tabela=(cols,linhas)=>linhas.length?`<div class="rolar"><table><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr>${linhas.map(l=>`<tr>${l.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`:'<div class="vazio">Nenhum registro encontrado.</div>';
+const tabMov=l=>tabela(['Data','Produto','Tipo','Quantidade','Origem / Finalidade','Observações'],l.map(m=>[br(m.data),esc(m.produto_nome),m.tipo=='entrada'?'<span class="b grn">⬆ Entrada</span>':'<span class="b yel">⬇ Saída</span>',(m.tipo=='entrada'?'+':'−')+num(m.quantidade)+' '+esc(m.unidade),esc(m.motivo)+(m.detalhe?' · '+esc(m.detalhe):''),esc(m.observacoes)]));
+
+async function ir(t){tela=t;menu.classList.remove('abre');document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.t==t));
+  try{await ({dashboard,produtos:telaProdutos,entrada:()=>formMov('entrada'),saida:()=>formMov('saida'),historico,relatorios})[t]()}catch(e){toast(e.message,1)}}
+document.querySelectorAll('nav a').forEach(a=>a.onclick=()=>ir(a.dataset.t));
+
+async function dashboard(){
+  const d=await api('dashboard'),tot=Math.max(d.entradas,d.saidas,1),t30=Math.max(d.entradas30,d.saidas30,1);
+  const al=[...d.zerados.map(p=>`<div class="alerta red">🚫 <b>${esc(p.nome)}</b> está sem estoque.</div>`),...d.baixo.map(p=>`<div class="alerta yel">⚠️ <b>${esc(p.nome)}</b>: ${num(p.quantidade)} ${esc(p.unidade)} (mínimo ${num(p.minimo)}).</div>`)].join('')||'<div class="vazio">✅ Nenhum alerta. Estoque em dia!</div>';
+  $('#conteudo').innerHTML=`<h1>Dashboard</h1><div class="cards">
+   <div class="card"><span>📦 Produtos cadastrados</span><b>${d.total}</b></div>
+   <div class="card"><span>✅ Produtos disponíveis</span><b>${d.disponiveis}</b></div>
+   <div class="card warn"><span>⚠️ Estoque baixo</span><b>${d.baixo.length}</b></div>
+   <div class="card bad"><span>🚫 Sem estoque</span><b>${d.zerados.length}</b></div></div>
+  <div class="grid2"><section class="box"><h2>🔔 Alertas de estoque</h2>${al}</section>
+  <section class="box"><h2>📊 Resumo de entradas e saídas</h2>
+   <label>Total registrado — Entradas: ${d.entradas}</label><div class="barra"><i style="width:${d.entradas/tot*100}%"></i></div>
+   <label>Total registrado — Saídas: ${d.saidas}</label><div class="barra s"><i style="width:${d.saidas/tot*100}%"></i></div>
+   <label>Últimos 30 dias — Entradas: ${d.entradas30}</label><div class="barra"><i style="width:${d.entradas30/t30*100}%"></i></div>
+   <label>Últimos 30 dias — Saídas: ${d.saidas30}</label><div class="barra s"><i style="width:${d.saidas30/t30*100}%"></i></div></section></div>
+  <section class="box"><h2>🕘 Últimas movimentações</h2>${tabMov(d.ultimas)}</section>`}
+
+async function telaProdutos(){
+  if(!$('#fb')){ $('#conteudo').innerHTML=`<h1>Produtos</h1><div class="filtros">
+   <div><label>Buscar</label><input id="fb" placeholder="Nome ou código"></div>
+   <div><label>Categoria</label><select id="fc"><option value="">Todas</option>${opts(cfg.categorias)}</select></div>
+   <div><label>Situação</label><select id="fs"><option value="">Todas</option><option value="baixo">Estoque baixo</option><option value="zerado">Sem estoque</option></select></div>
+   <div style="flex:0"><button onclick="abrirProduto()">➕ Novo produto</button></div></div><section class="box" id="lista"></section>`;
+   ['fb','fc','fs'].forEach(i=>$('#'+i).oninput=telaProdutos)}
+  produtos=await api(`produtos?busca=${encodeURIComponent($('#fb').value)}&categoria=${encodeURIComponent($('#fc').value)}&situacao=${$('#fs').value}`);
+  $('#lista').innerHTML=tabela(['Código','Produto','Categoria','Quantidade','Mínimo','Situação','Cadastro','Ações'],produtos.map(p=>[esc(p.codigo),`<b>${esc(p.nome)}</b><br><small>${esc(p.descricao)}</small>`,esc(p.categoria),num(p.quantidade)+' '+esc(p.unidade),num(p.minimo),sit(p.quantidade,p.minimo),br(p.data_cadastro),
+   `<button class="mini sec" onclick="abrirProduto(${p.id})">✏️ Editar</button> <button class="mini perigo" onclick="excluir(${p.id})">🗑️</button>`]))}
+
+function abrirProduto(id){
+  const p=produtos.find(x=>x.id==id)||{},novo=!id;
+  $('#fp').innerHTML=`<h2>${novo?'➕ Novo produto':'✏️ Editar produto'}</h2>
+  <div class="linha"><div><label>Código</label><input id="pc" value="${esc(p.codigo)}" ${novo?'placeholder="Automático (PS-001...)"':'disabled'}></div>
+  <div><label>Categoria *</label><select id="pk">${opts(cfg.categorias,p.categoria)}</select></div></div>
+  <label>Nome *</label><input id="pn" value="${esc(p.nome)}"><label>Descrição</label><textarea id="pd" rows="2">${esc(p.descricao)}</textarea>
+  <div class="linha">${novo?'<div><label>Quantidade inicial</label><input id="pq" type="number" min="0" step="any" value="0"></div>':''}
+  <div><label>Quantidade mínima *</label><input id="pm" type="number" min="0" step="any" value="${p.minimo??0}"></div>
+  <div><label>Unidade *</label><select id="pu">${opts(cfg.unidades,p.unidade)}</select></div></div>
+  ${novo?'':'<small>A quantidade só muda por entradas e saídas.</small>'}
+  <p style="text-align:right;margin-top:16px"><button type="button" class="sec" onclick="dlg.close()">Cancelar</button> <button type="button" onclick="salvarProduto(${id||0})">💾 Salvar</button></p>`;
+  dlg.showModal()}
+async function salvarProduto(id){
+  const b={codigo:$('#pc').value,nome:$('#pn').value,categoria:$('#pk').value,descricao:$('#pd').value,minimo:$('#pm').value,unidade:$('#pu').value};
+  if($('#pq'))b.quantidade=$('#pq').value;
+  try{await api(id?'produtos/'+id:'produtos',id?'PUT':'POST',b);dlg.close();toast('Produto salvo com sucesso!');telaProdutos()}catch(e){toast(e.message,1)}}
+async function excluir(id){const p=produtos.find(x=>x.id==id);
+  if(!confirm(`Excluir o produto "${p.nome}"?\nO histórico de movimentações será mantido.`))return;
+  try{await api('produtos/'+id,'DELETE');toast('Produto excluído.');telaProdutos()}catch(e){toast(e.message,1)}}
+
+async function formMov(tipo){
+  produtos=await api('produtos');const ent=tipo=='entrada';
+  $('#conteudo').innerHTML=`<h1>${ent?'📥 Entrada de produtos':'📤 Saída de produtos'}</h1><section class="box form">
+   <label>Produto *</label><select id="mp">${produtos.length?produtos.map(p=>`<option value="${p.id}">${esc(p.nome)} (${esc(p.codigo)}) — estoque: ${num(p.quantidade)} ${esc(p.unidade)}</option>`).join(''):'<option value="">Cadastre um produto primeiro</option>'}</select>
+   <div class="linha"><div><label>Quantidade *</label><input id="mq" type="number" min="0" step="any"></div><div><label>Data *</label><input id="md" type="date" max="${hoje()}" value="${hoje()}"></div></div>
+   ${ent?`<label>Tipo de entrada *</label><select id="mt"><option>Doação</option><option>Compra</option></select><label>Origem *</label><input id="mo" placeholder="Ex.: Doação fictícia – Mercado Exemplo">`
+        :`<label>Finalidade da retirada *</label><select id="mo">${opts(cfg.finalidades)}</select>`}
+   <label>Observações</label><textarea id="mb" rows="2"></textarea>
+   <p><button onclick="salvarMov('${tipo}')">${ent?'📥 Registrar entrada':'📤 Registrar saída'}</button></p></section>`}
+async function salvarMov(tipo){
+  try{await api('movimentacoes','POST',{tipo,produto_id:$('#mp').value,quantidade:$('#mq').value,data:$('#md').value,motivo:tipo=='entrada'?$('#mt').value:'Uso',detalhe:$('#mo').value,observacoes:$('#mb').value});
+    toast(tipo=='entrada'?'Entrada registrada!':'Saída registrada! Estoque atualizado.');formMov(tipo)}catch(e){toast(e.message,1)}}
+
+async function historico(){
+  if(!$('#hb')){$('#conteudo').innerHTML=`<h1>🕘 Histórico de movimentações</h1><div class="filtros">
+   <div><label>Produto</label><input id="hb" placeholder="Nome ou código"></div>
+   <div><label>Tipo</label><select id="ht"><option value="">Todos</option><option value="entrada">Entradas</option><option value="saida">Saídas</option></select></div>
+   <div><label>De</label><input id="hd" type="date"></div><div><label>Até</label><input id="ha" type="date"></div></div><section class="box" id="hl"></section>`;
+   ['hb','ht','hd','ha'].forEach(i=>$('#'+i).oninput=historico)}
+  $('#hl').innerHTML=tabMov(await api(`movimentacoes?busca=${encodeURIComponent($('#hb').value)}&tipo=${$('#ht').value}&de=${$('#hd').value}&ate=${$('#ha').value}`))}
+
+async function relatorios(){
+  if(!$('#rd')){$('#conteudo').innerHTML=`<h1>📄 Relatórios</h1><div class="abas">${[['geral','Estoque geral'],['doacoes','Doações recebidas'],['utilizados','Produtos utilizados'],['falta','Produtos em falta']].map(([k,n])=>`<button data-r="${k}">${n}</button>`).join('')}</div>
+   <div class="filtros"><div><label>De</label><input id="rd" type="date"></div><div><label>Até</label><input id="ra" type="date"></div><div style="flex:0"><a class="btn" id="csv">⬇ Exportar CSV</a></div></div><section class="box" id="rl"></section>`;
+   document.querySelectorAll('.abas button').forEach(b=>b.onclick=()=>{rel=b.dataset.r;relatorios()});$('#rd').oninput=$('#ra').oninput=relatorios}
+  document.querySelectorAll('.abas button').forEach(b=>b.classList.toggle('on',b.dataset.r==rel));
+  const q=`de=${$('#rd').value}&ate=${$('#ra').value}`,r=await api(`relatorios/${rel}?${q}`);
+  $('#csv').href=`/api/relatorios/${rel}?formato=csv&${q}`;$('#rl').innerHTML=`<h2>${r.titulo}</h2>`+tabela(r.colunas,r.linhas.map(l=>l.map(esc)))}
+
+(async()=>{cfg=await api('config');ir('dashboard')})().catch(e=>toast(e.message,1));
+</script>
+</body>
+</html>
